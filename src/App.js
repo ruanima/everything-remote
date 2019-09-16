@@ -2,19 +2,25 @@ import React from 'react';
 import logo from './logo.svg';
 import './App.css';
 
+import ReactTable from "react-table";
+import "react-table/react-table.css";
+
+
 class App extends React.Component {
   constructor(props){
     super(props)
     this.state = {
       searchWord: '',
       tableHead: ['NAME', 'TRANS_PATH', 'SIZE', 'DATE_MODIFIED'],
-      tableData: [
-        ['1', '2', '3', '4'],
-        ['a', 'b', 'c', 'd'],
-        ['1', '2', '3', '456\n789'],
-        ['a', 'b', 'c', 'd'],
-      ],
+      tableData: [],
     }
+    window.ipcRenderer.on('asynchronous-reply-search', (event, arg)=>{
+      console.log(arg)
+      this.setState({
+        tableData: this.state.tableData.concat(arg.data)
+      })
+    })
+    window.ipcRenderer.send('asynchronous-msg-search', '大海')
   }
 
   // bb(){
@@ -33,27 +39,27 @@ class App extends React.Component {
     // window.ipcRenderer.on('asynchronous-reply-init', (event, arg) => {
     //   console.log(arg) // prints "pong"
     // })
-    window.ipcRenderer.on('asynchronous-reply-search', (event, arg)=>{
-      console.log(arg)
-    })
-    window.ipcRenderer.send('asynchronous-msg-search', '大海')
+
+    let columns = []
+    for (let i of this.state.tableHead) {
+      columns.push({
+        Header: i,
+        accessor: i
+      })
+    }
 
     return (
-      <div className="App">
-        <header className="App-header">
-          <img src={logo} className="App-logo" alt="logo" />
-          <p>
-            Edit <code>src/App.js</code> and save to reload.
-          </p>
-          <a
-            className="App-link"
-            href="https://reactjs.org"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Learn React {this.state.tableData}
-          </a>
-        </header>
+      <div>
+        <ReactTable
+          data={this.state.tableData}
+          columns={columns}
+          defaultPageSize={20}
+          style={{
+            height: "550px" // This will force the table body to overflow and scroll, since there is not enough room
+          }}
+          className="-striped -highlight"
+        />
+        <br />
       </div>
     );
   }
