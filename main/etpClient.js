@@ -5,7 +5,7 @@ const path = require('path')
 class EtpClient {
     constructor() {
         this.config = {
-            host: '192.168.123.100',
+            host: '192.168.162.1',
         }
         this.mountPoints = {
             'E:': '/Volumes/storage',

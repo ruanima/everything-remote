@@ -5,6 +5,12 @@ const BrowserWindow = electron.BrowserWindow;
 const path = require('path');
 const isDev = require('electron-is-dev');
 
+const preferences = require('./preferences');
+
+preferences.on('save', (preferences) => {
+    console.log(`Preferences were saved.`, JSON.stringify(preferences, null, 4));
+});
+
 let mainWindow;
 
 function createWindow() {
@@ -63,6 +69,7 @@ ipcMain.on('asynchronous-msg-search', async (event, arg) => {
       etp = new EtpClient()
       await etp.connect()
     }
+    preferences.show()
     data = await etp.search(arg)
     event.reply('asynchronous-reply-search', data)
   } catch (e) {
