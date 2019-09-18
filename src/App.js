@@ -2,8 +2,7 @@ import React from 'react';
 // import logo from './logo.svg';
 import './App.css';
 
-import ReactTable from "react-table";
-import "react-table/react-table.css";
+import ReactVirtualizedTable from './page'
 
 
 class App extends React.Component {
@@ -48,18 +47,40 @@ class App extends React.Component {
       })
     }
 
+    columns = [
+      {
+        width: 400,
+        label: 'Dessert',
+        dataKey: 'dessert',
+      },
+      {
+        width: 120,
+        label: 'Calories\u00A0(g)',
+        dataKey: 'calories',
+        numeric: true,
+      },
+      {
+        width: 120,
+        label: 'Fat\u00A0(g)',
+        dataKey: 'fat',
+        numeric: true,
+      },
+      {
+        width: 120,
+        label: 'Carbs\u00A0(g)',
+        dataKey: 'carbs',
+        numeric: true,
+      },
+      {
+        width: 120,
+        label: 'Protein\u00A0(g)',
+        dataKey: 'protein',
+        numeric: true,
+      },
+    ]
     return (
       <div>
-        <ReactTable
-          data={this.state.tableData}
-          columns={columns}
-          defaultPageSize={20}
-          style={{
-            height: "550px" // This will force the table body to overflow and scroll, since there is not enough room
-          }}
-          className="-striped -highlight"
-        />
-        <br />
+        <ReactVirtualizedTable columns={columns}/>
       </div>
     );
   }

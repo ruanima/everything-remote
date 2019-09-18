@@ -69,7 +69,7 @@ ipcMain.on('asynchronous-msg-search', async (event, arg) => {
       etp = new EtpClient()
       await etp.connect()
     }
-    preferences.show()
+    // preferences.show()
     data = await etp.search(arg)
     event.reply('asynchronous-reply-search', data)
   } catch (e) {
