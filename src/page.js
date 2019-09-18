@@ -95,9 +95,15 @@ class MuiVirtualizedTable extends React.PureComponent {
       );
     })
   }
-  onRowRightClick({ event, index, rowData }) {
+
+  onRowClick({ event, index, rowData }){
     console.log(rowData)
   }
+
+  onRowRightClick({ event, index, rowData }) {
+    window.ipcRenderer.send('asynchronous-msg-file', rowData['TRANS_PATH'] + '/' + rowData['NAME'])
+  }
+
   render() {
     const { classes, columns, rowHeight, headerHeight, ...tableProps } = this.props;
     return (

@@ -37,22 +37,25 @@ class App extends React.Component {
   }
 
   doSearch() {
-    // console.log('===' + this.state.searchWord)
     window.ipcRenderer.send('asynchronous-msg-search', this.state.searchWord)
   }
 
   initSearch() {
     window.ipcRenderer.on('asynchronous-reply-search', (event, arg)=>{
       console.log(this.state)
-      let _row = []
-      for (let i=0; i<arg.data.length; i++){
-        _row.push({id:i, ...arg.data[i]})
+      let _rows = []
+      let i = 0
+      for (let row of arg.data){
+        if ('TRANS_PATH' in row) {
+          _rows.push({id:i, ...row})
+          i += 1
+        }
       }
       this.setState({
-        tableData: _row
+        tableData: _rows
       })
     })
-    window.ipcRenderer.send('asynchronous-msg-search', '大海')
+    window.ipcRenderer.send('asynchronous-msg-connect', '')
   }
 
   render() {
@@ -60,7 +63,7 @@ class App extends React.Component {
     const columns = []
     for (let [k,v] of Object.entries(this.state.tableHead)) {
       columns.push({
-        width: 2000 * v / 10,
+        width: 5000 * v / 10,
         label: k,
         dataKey: k,
       })

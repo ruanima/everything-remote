@@ -48,6 +48,7 @@ app.on('activate', () => {
 // 进程间通信
 const { ipcMain } = require('electron')
 const { EtpClient } = require('./etpClient')
+const {shell} = require('electron')
 
 // ipcMain.on('asynchronous-message', (event, arg) => {
 //   console.log(arg) // prints "ping"
@@ -63,16 +64,28 @@ const { EtpClient } = require('./etpClient')
 
 var etp = null
 
+async function initConnect() {
+  if (!etp) {
+    etp = new EtpClient()
+    await etp.connect()
+  }
+}
+
+ipcMain.on('asynchronous-msg-connect', async (event, arg) => {
+  try {
+    await initConnect()
+  } catch (e) {
+    console.log(e)
+  }
+})
 ipcMain.on('asynchronous-msg-search', async (event, arg) => {
   try {
-    if (!etp) {
-      etp = new EtpClient()
-      await etp.connect()
-    }
-    // preferences.show()
     data = await etp.search(arg)
     event.reply('asynchronous-reply-search', data)
   } catch (e) {
     console.log(e)
   }
+})
+ipcMain.on('asynchronous-msg-file', async (event, arg) => {
+  shell.showItemInFolder(arg)
 })
